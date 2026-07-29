@@ -1,123 +1,144 @@
-# AI-Powered Customer Complaint Management System
+# 💊 AI-Powered Customer Complaint Management System
 
-A pharmaceutical (API & FDF) customer complaint intake tool: a QA reviewer drops
-in a complaint document (or pastes an email), and a LangGraph agent pipeline
-running on Groq extracts structured fields, assesses risk, checks completeness,
-flags duplicates, and suggests root cause / CAPA — auto-populating the
-"Log Customer Complaint" form shown in the reference UI.
+An AI-powered web application that helps manage pharmaceutical customer complaints by extracting structured information from complaint documents and text using Large Language Models (LLMs). The system simplifies complaint processing and provides an AI assistant for analysing complaint data.
 
-## Architecture
+## 🌐 Live Demo
+
+**Frontend:** https://ai-pharma-complaint-management-syst-eight.vercel.app/
+
+**Backend API:** https://complaint-management-api.onrender.com
+
+**API Documentation:** https://complaint-management-api.onrender.com/docs
+
+---
+
+# Features
+
+- Upload complaint documents in **PDF** and **DOCX** formats.
+- Submit complaints by entering text manually.
+- AI extracts structured complaint information from uploaded documents or text.
+- Automatically stores extracted complaint details in a PostgreSQL database.
+- View all stored complaints.
+- Edit and update complaint information.
+- AI chat assistant to answer questions related to a selected complaint.
+- REST API built using FastAPI.
+- Responsive React-based user interface.
+- Production deployment using Vercel and Render.
+
+---
+
+# Tech Stack
+
+## Frontend
+- React
+- Vite
+- Redux Toolkit
+- JavaScript
+- CSS
+
+## Backend
+- FastAPI
+- Python
+- SQLAlchemy
+- PostgreSQL
+
+## AI
+- Groq API
+- LangGraph
+
+## Deployment
+- Vercel
+- Render
+- Render PostgreSQL
+
+---
+
+# Project Structure
 
 ```
-┌─────────────────────┐        ┌──────────────────────┐        ┌──────────────────┐
-│  React + Redux SPA  │  HTTP  │   FastAPI backend      │  calls │  Groq API         │
-│  (Log Complaint form│ ─────► │   /api/ai/ingest/*      │ ─────► │  gemma2-9b-it     │
-│   + AI Assistant)   │ ◄───── │   /api/ai/chat          │ ◄───── │  llama-3.3-70b    │
-└─────────────────────┘        │   /api/complaints        │        └──────────────────┘
-                                │        │                │
-                                │        ▼                │
-                                │  LangGraph StateGraph   │
-                                │  (agents/graph.py)      │
-                                │        │                │
-                                │        ▼                │
-                                │  Postgres / MySQL       │
-                                └──────────────────────────┘
+complaint-management-system
+│
+├── frontend
+├── backend
+│   ├── app
+│   ├── requirements.txt
+│   └── .python-version
+└── README.md
 ```
 
-### Why this structure
+---
 
-- **FastAPI** exposes two route groups: `routes_ai.py` (the AI-driven intake +
-  chat) and `routes_complaints.py` (plain CRUD once a complaint exists).
-- **LangGraph** (`app/agents/graph.py`) is a linear `StateGraph` with one node
-  per AI capability, so each capability is independently testable and it's
-  obvious where to add branching later (e.g. skip CAPA suggestion for Minor
-  severity complaints):
+# Installation
 
-  ```
-  extract_fields → check_completeness → classify_risk
-                 → detect_duplicates → suggest_root_cause_and_capa
-                 → summarize_and_respond
-  ```
+## Clone Repository
 
-- **Two Groq models are used deliberately**: `gemma2-9b-it` for the cheap/fast
-  first-pass field extraction and per-turn summaries, `llama-3.3-70b-versatile`
-  for the heavier reasoning steps (risk classification, duplicate comparison,
-  root cause/CAPA, and the free-form chat) where better instruction-following
-  matters more than latency.
-- **Redux** holds two slices: `complaintSlice` (the form's field values +
-  ingest/save status — this is what "Awaiting AI extraction..." vs a filled,
-  highlighted field is driven by) and `assistantSlice` (the chat transcript).
-
-## End-to-end workflow (what happens on drag & drop)
-
-1. User drops a PDF/DOCX/TXT/EML on the **AI Complaint Intake Assistant**
-   panel → `FileUpload.jsx` dispatches `ingestDocument(file)`.
-2. Redux thunk calls `POST /api/ai/ingest/document` (multipart) →
-   `routes_ai.py`.
-3. `document_parser.py` extracts raw text (pypdf / python-docx / stdlib
-   `email` module depending on file type).
-4. `intake_graph.invoke({...})` runs the LangGraph pipeline described above.
-5. The backend persists a new `Complaint` row with everything the graph
-   produced and returns `{ complaint_id, extracted, analysis, assistant_message }`.
-6. Redux's `applyIngestResult` reducer merges `extracted` into `fields` —
-   every `FormField` reading that field re-renders from "Awaiting AI
-   extraction..." to the filled, light-blue-highlighted value.
-7. The `analysis` block (completeness %, root cause, CAPA, duplicate flag)
-   renders under the progress bar, and `assistant_message` appears as the
-   first assistant chat bubble.
-8. Reviewer can edit any field directly (plain controlled inputs), ask the
-   assistant follow-up questions (`POST /api/ai/chat`, grounded on the
-   complaint's current DB row), and click **Save Complaint**
-   (`PUT /api/complaints/{id}`) which flips status to "Under Review".
-
-## Bonus AI features implemented
-
-| Feature | Where |
-|---|---|
-| Complaint Completeness Checker | `nodes.check_completeness` — flags which of the 10 required fields the LLM couldn't find |
-| AI Risk Classification | `nodes.classify_risk` — Severity/Priority with reasoning, based on patient-safety impact |
-| Duplicate Complaint Detection | `nodes.detect_duplicates` — compares against the last 50 complaints in the DB |
-| Root Cause Recommendation | `nodes.suggest_root_cause_and_capa` |
-| CAPA Recommendation | same node, paired output |
-| Complaint Summary | `nodes.summarize_and_respond` |
-| Follow-up chat grounded on the record | `POST /api/ai/chat` |
-
-## Setup
-
-### 1. Database
-Create an empty Postgres or MySQL database, e.g.:
 ```bash
-createdb complaint_qms   # Postgres
+git clone https://github.com/shrikantsul436-svg/ai-pharma-complaint-management-system.git
 ```
-Tables are auto-created on first backend startup (see `app/main.py`) — no
-migration step needed for this assignment.
 
-### 2. Backend
-```bash
-cd backend
-python -m venv venv && source venv/bin/activate   # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-cp .env.example .env    # then fill in GROQ_API_KEY and DATABASE_URL
-uvicorn app.main:app --reload --port 8000
-```
-Get a free Groq API key at https://console.groq.com/keys.
+## Frontend
 
-### 3. Frontend
 ```bash
 cd frontend
 npm install
-npm run dev     # http://localhost:5173, proxies /api to :8000
+npm run dev
 ```
 
-### 4. Try it
-Use the sample documents in `backend/sample_data/` (a contamination email,
-a packaging-defect email, and a discoloration PDF) — drag one onto the AI
-Assistant panel, or paste its contents into "Paste Complaint Text / Email".
+## Backend
 
-## Notes on scope
+```bash
+cd backend
 
-- OCR/document parsing is intentionally simple (pypdf / python-docx / stdlib
-  `email`), per the assignment — no production-grade parsing.
-- DB migrations use `Base.metadata.create_all` rather than Alembic, to keep
-  setup to one command for this assignment.
-- Auth is out of scope — every reviewer sees the same shared complaint list.
+python -m venv venv
+
+# Windows
+venv\Scripts\activate
+
+pip install -r requirements.txt
+
+uvicorn app.main:app --reload
+```
+
+---
+
+# Environment Variables
+
+Create a `.env` file inside the backend folder.
+
+```env
+GROQ_API_KEY=your_api_key
+
+DATABASE_URL=your_database_url
+
+FRONTEND_ORIGIN=http://localhost:5173
+
+GROQ_EXTRACTION_MODEL=llama-3.1-8b-instant
+
+GROQ_REASONING_MODEL=llama-3.3-70b-versatile
+```
+
+---
+
+# API Endpoints
+
+## AI
+
+- POST `/api/ai/ingest/document`
+- POST `/api/ai/ingest/text`
+- POST `/api/ai/chat`
+
+## Complaints
+
+- GET `/api/complaints`
+- PUT `/api/complaints/{id}`
+
+---
+
+<img width="772" height="901" alt="Screenshot 2026-07-29 200751" src="https://github.com/user-attachments/assets/03c90e7e-d9c1-4a28-9532-0ec494e4774c" />
+
+<img width="591" height="545" alt="Screenshot 2026-07-29 200758" src="https://github.com/user-attachments/assets/2a577780-b54d-4da2-a11b-a708231691ad" />
+
+<img width="591" height="545" alt="Screenshot 2026-07-29 200758" src="https://github.com/user-attachments/assets/fde0cdcc-14ba-41c8-abfd-2a4fa148bb57" />
+
+---
+
