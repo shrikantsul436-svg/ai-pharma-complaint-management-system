@@ -1,0 +1,24 @@
+From: quality.acmepharma@acmepharma-distributors.com
+Subject: URGENT - Foreign Particulate Contamination Complaint - Batch AMX-2026-0417
+
+Dear Quality Team,
+
+I am writing on behalf of Acme Pharma Distributors to formally lodge a
+complaint regarding Amoxicillin Trihydrate API (99.2% purity grade) that
+we received from your Pune manufacturing facility.
+
+During routine incoming inspection on 20th July 2026, our QC team observed
+black particulate matter in 3 out of 20 drums received from Batch/Lot
+AMX-2026-0417. The batch was manufactured on 17th April 2026 with an
+expiry date of 16th April 2028. Total quantity affected is approximately
+25 kg across the three drums.
+
+Given the nature of the contamination, we are treating this as a critical
+quality event and have quarantined the entire batch pending your
+investigation. Please advise on root cause and corrective actions at the
+earliest, as this materially affects our downstream FDF production
+schedule.
+
+Regards,
+Rajesh Kulkarni
+QA Manager, Acme Pharma Distributors
