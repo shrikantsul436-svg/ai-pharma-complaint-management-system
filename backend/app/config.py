@@ -18,7 +18,7 @@ class Settings:
     "DATABASE_URL",
     "postgresql://complaint_qms_user:WZJ9P6UQ5ccEG0NUZcRsM06QBFSavbMn@dpg-d9krqttbedkc73bbk560-a.singapore-postgres.render.com:5432/complaint_qms"
 )
-    FRONTEND_ORIGIN: str = os.getenv("FRONTEND_ORIGIN", "https://ai-pharma-complaint-management-syst-eight.vercel.app/")
+    FRONTEND_ORIGIN: str = os.getenv("FRONTEND_ORIGIN", "https://ai-pharma-complaint-management-syst-eight.vercel.app")
 
 
 settings = Settings()
