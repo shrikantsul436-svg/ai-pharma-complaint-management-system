@@ -134,11 +134,13 @@ GROQ_REASONING_MODEL=llama-3.3-70b-versatile
 
 ---
 
-<img width="772" height="901" alt="Screenshot 2026-07-29 200751" src="https://github.com/user-attachments/assets/03c90e7e-d9c1-4a28-9532-0ec494e4774c" />
+<img width="591" height="545" alt="Screenshot 2026-07-29 200758" src="https://github.com/user-attachments/assets/ebadfdc2-16e5-4d64-93e6-c26b0cddc018" />
 
-<img width="591" height="545" alt="Screenshot 2026-07-29 200758" src="https://github.com/user-attachments/assets/2a577780-b54d-4da2-a11b-a708231691ad" />
+<img width="772" height="901" alt="Screenshot 2026-07-29 200751" src="https://github.com/user-attachments/assets/3e5f2562-812c-494a-afdd-3d8e1ff23361" />
 
-<img width="591" height="545" alt="Screenshot 2026-07-29 200758" src="https://github.com/user-attachments/assets/fde0cdcc-14ba-41c8-abfd-2a4fa148bb57" />
+
+<img width="573" height="901" alt="Screenshot 2026-07-29 200739" src="https://github.com/user-attachments/assets/50f92c2f-aa01-47e1-bc36-f3ea1fe9bd2f" />
+
 
 ---
 
