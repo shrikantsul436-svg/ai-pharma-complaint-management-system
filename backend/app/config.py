@@ -15,9 +15,10 @@ class Settings:
     GROQ_REASONING_MODEL: str = os.getenv("GROQ_REASONING_MODEL", "llama-3.3-70b-versatile")
 
     DATABASE_URL: str = os.getenv(
-        "DATABASE_URL", "postgresql+psycopg2://postgres:postgres@localhost:5432/complaint_qms"
-    )
-    FRONTEND_ORIGIN: str = os.getenv("FRONTEND_ORIGIN", "http://localhost:5173")
+    "DATABASE_URL",
+    "postgresql://complaint_qms_user:WZJ9P6UQ5ccEG0NUZcRsM06QBFSavbMn@dpg-d9krqttbedkc73bbk560-a.singapore-postgres.render.com:5432/complaint_qms"
+)
+    FRONTEND_ORIGIN: str = os.getenv("FRONTEND_ORIGIN", "https://ai-pharma-complaint-management-syst-eight.vercel.app/")
 
 
 settings = Settings()
