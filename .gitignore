@@ -23,7 +23,7 @@ backend/__pycache__/
 frontend/node_modules/
 frontend/dist/
 frontend/.env
-
+.env.example
 # OS
 .DS_Store
 Thumbs.db
